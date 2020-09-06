@@ -1,47 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import {Board} from './Components/Board';
 import boardGenerator from './helperFxns';
 
-let {boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices} = boardGenerator();
-const wordsOnBoard = ["SWIFT", "KOTLIN", "OBJECTIVEC", "VARIABLE", "JAVA", "MOBILE"]
-
-const window = Dimensions.get("window");
-const screen = Dimensions.get("screen");
+let { wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices} = boardGenerator();
+let { width, height } = Dimensions.get('screen');
 
 export default function App() {
+  const [words, setWords] = useState(wordsOnBoard)
   const [board, setBoard] = useState(boardArr);
   const [takenIndices, setTakenIndices] = useState(taken);
   const [wordObj, setWordObj] = useState(wordObject);
-  const [wordIndArr, setWordIndArr] = useState(wordRanges);
   const [firstAndLast, setFirstAndLast] = useState(firstAndLastLetterIndices);  
 
   const handleNewGame = () => {
-    let {boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices} = boardGenerator();
+    let {wordsOnBoard, boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices} = boardGenerator();
+    setWords(wordsOnBoard);
     setBoard(boardArr);
     setTakenIndices(taken);
     setWordObj(wordObject);
-    setWordIndArr(wordRanges);
     setFirstAndLast(firstAndLastLetterIndices);
   }
 
 
   return (
     <View style={styles.container}>
+      <StatusBar style="auto" />
       <Board
           board={board} 
           indices={takenIndices} 
-          words={wordsOnBoard} 
+          words={words} 
           wordObj={wordObj} 
-          wordRanges={wordIndArr} 
           firstAndLastIndices={firstAndLast} 
           handleNewGame={handleNewGame.bind()}
           appStyleSheet={styles}
-          screenHeight = {screen.height}
-          screenWidth = {screen.width} 
           />
-      <StatusBar style="auto" />
     </View>
   );
 }
@@ -49,12 +43,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: screen.width,
-    height: screen.height,
+    width: width,
+    height: height,
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // textAlign: 'center',
     backgroundColor: '#E3D0FF',
   },
 });

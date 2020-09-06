@@ -1,10 +1,10 @@
-const wordsOnBoard = ["SWIFT", "KOTLIN", "OBJECTIVEC", "VARIABLE", "JAVA", "MOBILE"]
-// const columnEndIndices = [14, 29, 44, 59, 74, 89, 104, 119, 134, 149, 164, 179, 194, 209, 224];
-const columnEndIndices = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99]
-const boardSize = 100;
+const programmingLanguages = ['PYTHON','PHP','SQL','MATLAB','PERL','GO','GROOVY','SAS','LUA','DART','FORTRAN','COBOL','SCRATCH','SCALA','ABAP','LISP','LOGO','ADA','PROLOG','SCHEME','RUST','HASKELL','JULIA','HACK','ERLANG','RPG','BASH','RUBY'] 
+let words = ["SWIFT", "KOTLIN", "OBJECTIVEC", "VARIABLE", "JAVA", "MOBILE"]
+
+const boardSize = 121;
 let rowLength = Math.sqrt(boardSize)
-// const wordsOnBoard =['JAVA', 'JAVA']
-const randomizeBoard=()=>{
+
+const generateRandomBoard=()=>{
     let arr = []
     for (let i = 0; i < boardSize; i++) {
         arr.push(String.fromCharCode(Math.floor((Math.random() * (90-65)) + 65)));
@@ -12,7 +12,7 @@ const randomizeBoard=()=>{
     return arr;
 }
 
-const randomNumberGenerator = (num) => {
+const generateRandomNumber = (num) => {
     return Math.floor(Math.random()*num);
 }
 
@@ -21,14 +21,13 @@ export default function boardGenerator(){
     let taken = [];
     let wordObject = {};
     let wordRanges = [];
-    //USE THE LINE BELOW FOR REAL THING
-    // let boardArr = randomizeBoard();
-    //USE THE LINE BELOW TO GET A SIMPLIFIED VERSION TO WORKING
-    let boardArr = Array(boardSize).fill('X',0)
+    let boardArr = generateRandomBoard();
 
+    //below line changes board to isolate words for debugging purposes
+    // boardArr = Array(boardSize).fill('X',0)
 
-    //checker checks if the suggested position for the word will conflict with the position of any of the existing words already on the board
-    let checker = (args) => {
+    //return true if the suggested position conflicts with any already established word positions    
+    let isOverlap = (args) => {
         for (let i = 0; i < args.length; i++) {
             if (taken.includes(args[i])) {
                 return true;
@@ -38,13 +37,20 @@ export default function boardGenerator(){
     }
 
     let sameLineCheck = (num) => {
-        // return columnEndIndices.includes(num)
         return num % rowLength === rowLength - 1
     }
 
+    const addTwoRandomWords = () => {
+        let number = generateRandomNumber(programmingLanguages.length-1);
+        return [...words, programmingLanguages[number], programmingLanguages[number+1]];
+    }
+
+    let wordsOnBoard = addTwoRandomWords();
+
+    //put in words
     for (let i = 0; i < wordsOnBoard.length; i++) {
         let current = wordsOnBoard[i]
-        let start = randomNumberGenerator(rowLength) * randomNumberGenerator(rowLength);
+        let start = generateRandomNumber(rowLength) * generateRandomNumber(rowLength);
         let end = start + current.length;
         let range = [];
         horizontal = !horizontal;
@@ -57,16 +63,14 @@ export default function boardGenerator(){
                 range.push(i)
             }
         }
-        //checking that this word wont conflict with a word already on the board
-        let check = checker(range);
    
-        //checking that this position wont run over into the next line or column depending on direction or any other exceptions that impact its candidacy
-        if (check === true || ((start+1).toString().charAt() !== end.toString().charAt()  && horizontal === true) || (horizontal === false && range[range.length-1] > boardSize)|| (range.some(sameLineCheck))) {
+        //final check for this word position's candidacy, will try again if not a viable position 
+        if (isOverlap(range) === true || ((start+1).toString().charAt() !== end.toString().charAt()  && horizontal === true) || (horizontal === false && range[range.length-1] > boardSize)|| (range.some(sameLineCheck))) {
             i--;
             continue;
         }
 
-        //position has been approved; adding to all the various lists and updating the board
+        //position approved; adding to relevant lists
         wordRanges.push(range);
         wordObject[current] = range;
         taken.push(...range);
@@ -85,5 +89,5 @@ export default function boardGenerator(){
       }
     });
 
-    return {boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices};
+    return {wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices};
   }

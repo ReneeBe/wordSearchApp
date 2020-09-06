@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, Text, StyleSheet} from 'react-native';
-
+import {verticalScale} from '../adjustableSize'
 
 export default function WordBar(props){
     const {words, found} = props;
@@ -22,19 +22,21 @@ export default function WordBar(props){
 
 const styles = StyleSheet.create({
     container: {
-        margin: 50,
-        padding: 5,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        margin: verticalScale(50),
+        padding: verticalScale(5),
         borderWidth: 2,
         borderColor:'#50495A',
         borderRadius: 10,
+        justifyContent: 'space-between',
+        alignContent: 'space-between',
     },
     text: {
-        // flexBasis: 'row',
-        fontSize: 20,
+        fontSize: verticalScale(20),
         fontWeight: 'bold',
         color: '#50495A',
         alignItems: 'center',
-        // borderWidth: 2,
     },
     found: {
         textDecorationLine: 'line-through'
