@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        margin: verticalScale(50),
+        margin: verticalScale(35),
         padding: verticalScale(5),
         borderWidth: 2,
         borderColor:'#50495A',

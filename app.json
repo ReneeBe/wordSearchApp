@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "wordSearchApp",
+    "name": "WordSearchApp",
     "slug": "wordSearchApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -21,6 +21,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Word Search App is a react-native word search app for iOS using a custom word search board generator.",
+    "githubUrl": "https://github.com/ReneeBe/wordSearchApp"
   }
 }
