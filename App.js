@@ -12,7 +12,9 @@ export default function App() {
   const [board, setBoard] = useState(boardArr);
   const [takenIndices, setTakenIndices] = useState(taken);
   const [wordObj, setWordObj] = useState(wordObject);
-  const [firstAndLast, setFirstAndLast] = useState(firstAndLastLetterIndices);  
+  const [firstAndLast, setFirstAndLast] = useState(firstAndLastLetterIndices);
+  // const [changeWordsClicked, setChangedWordsClicked] = useState(false)
+
 
   const handleNewGame = () => {
     let {wordsOnBoard, boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices} = boardGenerator();

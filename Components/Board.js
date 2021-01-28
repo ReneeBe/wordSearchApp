@@ -3,11 +3,13 @@ import {View, Text, StyleSheet} from 'react-native';
 import Tile from './Tile';
 import WordBar from './WordBar';
 import {horizontalScale, verticalScale} from '../adjustableSize';
+import ModifyWords from './ModifyWords'
 
 export function Board(props) {
     const [foundWords, setFoundWords] = useState([]);
     const [foundIndices, setFoundIndices] = useState([]);
     const [resetBoard, setResetBoard] = useState(false);
+    const [changeWordsClicked, setChangeWordsClicked] = useState(false)
 
     const handleClick = (i) => {
         const index = Number(i);
@@ -31,26 +33,42 @@ export function Board(props) {
         setResetBoard(true);
     }
 
-    let {words, board, indices, firstAndLastIndices, handleNewGame } = props;
+    const changeWords = () => {
+        setChangeWordsClicked(!changeWordsClicked);
+        // return <ModifyWords words={words} />
+    }
+
+    let { words, board, indices, firstAndLastIndices, handleNewGame } = props;
 
     return (
         <View>
             <View style={styles.appHeader}>
-                <Text style={styles.newGameButton} onPress={()=>{boardReset(), handleNewGame()}}>{'New Board'}</Text>
+                <Text style={styles.headerButton} onPress={()=>{boardReset(), handleNewGame()}}>{'New Board'}</Text>
                 <Text style={styles.headerText}>{'Word Search'}</Text> 
-                <Text style={styles.headerLeft}>{'                  '}</Text>
+                {/* <Text style={styles.headerLeft}>{'                  '}</Text> */}
+                <Text style={styles.headerButton} onPress={()=> { changeWords() }} >
+                    {changeWordsClicked ? 'Back to Game' : 'Change Words'}
+                </Text>
             </View>
             <View style={styles.outer}>
-                <Text style={styles.foundText}>
-                {foundWords.length === words.length ? 'Great work!' : `You found: ${foundWords.length} word(s)`}
-                </Text>
-                <View style={styles.grid}>
-                    {board.map((letter, i) => (
-                    <Tile key={i} value={letter} indices={indices} index={i} handleClick={handleClick.bind(this)} selected={foundIndices.includes(Number(i))} firstAndLastIndices={firstAndLastIndices}
-                    />))}
+                { changeWordsClicked === true ? (
+                    <ModifyWords words = {words} />
+                ) : (
+                <View>
+                    <Text style={styles.foundText}>
+                        {foundWords.length === words.length ? 'Great work!' : `You found: ${foundWords.length} word(s)`}
+                    </Text>
+
+                    <View style={styles.grid}>
+                        {board.map((letter, i) => (
+                        <Tile key={i} value={letter} indices={indices} index={i} handleClick={handleClick.bind(this)} selected={foundIndices.includes(Number(i))} firstAndLastIndices={firstAndLastIndices}
+                        />))}
+                    </View>
+
+                    <WordBar words={words} found={foundWords}/>
                 </View>
-                <WordBar words={words} found={foundWords}/>
-            </View>
+                )}
+                </View>
         </View>
     );
 }
@@ -58,7 +76,7 @@ export function Board(props) {
 const styles = StyleSheet.create({
     appHeader: {
         height: verticalScale(90),
-        marginHorizontal: horizontalScale(50),
+        marginHorizontal: horizontalScale(60),
         flexDirection: 'row',
         alignItems: 'flex-end',
         paddingBottom: verticalScale(10),
@@ -71,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: horizontalScale(15),
         fontWeight: 'bold',
     },
-    newGameButton: {
+    headerButton: {
         padding: 2,
         fontSize: horizontalScale(15),
         borderWidth: 2,
