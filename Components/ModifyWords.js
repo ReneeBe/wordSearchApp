@@ -7,7 +7,7 @@ export default function ModifyWords(props) {
 
     const [newWords, setNewWords] = useState(words);
     const [newlyAdded, setNewlyAdded] = useState('');
-    const [tooLongWord, setTooLongWord] = useState(false); 
+    const [tooLongWord, setTooLongWord] = useState(false);
 
     const handleDeleteWord =(index) => {
         let temp = newWords;
@@ -25,6 +25,8 @@ export default function ModifyWords(props) {
         }
     }
 
+
+
     return(
         <View>
             <View style={styles.grid}>
@@ -35,8 +37,10 @@ export default function ModifyWords(props) {
                     Press on any words below to delete from the list
                 </Text>
                 {newWords.map((word,i) => (
-                    <Text key={i} style={styles.text} onPress={ () => handleDeleteWord(i)}>
-                        {word}
+                    <Text key={i} style={styles.grid} onPress={ () => handleDeleteWord(i)}>
+                        <Text style={styles.text}>
+                            {word}
+                        </Text>
                     </Text>
                 ))}
 
@@ -50,10 +54,12 @@ export default function ModifyWords(props) {
 
                 <TextInput
                     style={styles.input}
-                    placeholder="Tap here to add your own word--maximum 11 letters long"
-                    onChangeText={ word => handleNewWord(word) }
+                    placeholder="Enter your own word..."
+                    onChangeText={ word => handleNewWord(word)}
+                    clearButtonMode='always'
+                    value={newlyAdded}
                 />
-                <Text style={styles.button} onPress={() => setNewWords([...newWords, newlyAdded])}>Submit</Text> 
+                <Text style={styles.button} onPress={() => {setNewWords([...newWords, newlyAdded]), setNewlyAdded('')}}>Submit</Text> 
             </View>
         </View>
     )
@@ -83,13 +89,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#50495A',
         alignItems: 'center',
+        textAlign: 'center'
     },
     input: {
         height: verticalScale(45),
+        width: horizontalScale(250),
         borderWidth: 2,
         borderColor:'#50495A',
         borderRadius: 10,
         padding: verticalScale(5),
+        margin: verticalScale(5)
     },
     button: {
         padding: 2,
@@ -153,13 +162,13 @@ const styles = StyleSheet.create({
     grid: {
         flex: 1,
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         flexWrap: 'wrap',
         position: 'relative',
         margin: 'auto',
         width: horizontalScale(365),
-        height: verticalScale(310),
+        height: verticalScale(50),
         backgroundColor: '#E3D0FF',
     },
 
