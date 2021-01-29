@@ -16,7 +16,7 @@ const generateRandomNumber = (num) => {
     return Math.floor(Math.random()*num);
 }
 
-export default function boardGenerator(){
+export const boardGenerator = (wordsArr = []) => {
     let horizontal = false;
     let taken = [];
     let wordObject = {};
@@ -24,7 +24,7 @@ export default function boardGenerator(){
     let boardArr = generateRandomBoard();
 
     //below line changes board to isolate words for debugging purposes
-    // boardArr = Array(boardSize).fill('X',0)
+    boardArr = Array(boardSize).fill('X',0);
 
     //return true if the suggested position conflicts with any already established word positions    
     let isOverlap = (args) => {
@@ -40,12 +40,13 @@ export default function boardGenerator(){
         return num % rowLength === rowLength - 1
     }
 
+    //this function adds two random words, and isn't relevant if the wors are already there
     const addTwoRandomWords = () => {
         let number = generateRandomNumber(programmingLanguages.length-1);
         return [...words, programmingLanguages[number], programmingLanguages[number+1]];
     }
 
-    let wordsOnBoard = addTwoRandomWords();
+    let wordsOnBoard = wordsArr.length > 0 ? wordsArr : addTwoRandomWords();
 
     //put in words
     for (let i = 0; i < wordsOnBoard.length; i++) {
@@ -91,3 +92,8 @@ export default function boardGenerator(){
 
     return {wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices};
   }
+
+  export const updateBoard = (arr) => {
+      return boardGenerator(arr);
+  }
+

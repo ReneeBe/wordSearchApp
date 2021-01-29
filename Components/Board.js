@@ -9,7 +9,9 @@ export function Board(props) {
     const [foundWords, setFoundWords] = useState([]);
     const [foundIndices, setFoundIndices] = useState([]);
     const [resetBoard, setResetBoard] = useState(false);
-    const [changeWordsClicked, setChangeWordsClicked] = useState(false)
+    const [changeWordsClicked, setChangeWordsClicked] = useState(false);
+    const [userUpdatedWords, setUserUpdatedWords] = useState(words);
+    // const [updateToCustomBoard, setUpdateToCustomBoard] = useState(false)
 
     const handleClick = (i) => {
         const index = Number(i);
@@ -33,26 +35,56 @@ export function Board(props) {
         setResetBoard(true);
     }
 
-    const changeWords = () => {
-        setChangeWordsClicked(!changeWordsClicked);
-        // return <ModifyWords words={words} />
+    const changeWords = (bool = '') => {
+        if (bool.length > 1) {
+            setChangeWordsClicked(Boolean(bool));
+        } else {
+            setChangeWordsClicked(!changeWordsClicked);
+        }
     }
 
-    let { words, board, indices, firstAndLastIndices, handleNewGame } = props;
+    const updateToUserUpdatedWords = (newWords) => {
+        console.log(newWords);
+        setUserUpdatedWords(newWords);
+    }
+
+    let { words, board, indices, firstAndLastIndices, handleNewGame, handleCustomBoard } = props;
 
     return (
         <View>
             <View style={styles.appHeader}>
-                <Text style={styles.headerButton} onPress={()=>{boardReset(), handleNewGame()}}>{'New Board'}</Text>
+                <Text style={styles.headerButton} onPress={()=>{boardReset(), handleNewGame(), setChangeWordsClicked(false) }}>New Board</Text>
+
+                {/* { changeWordsClicked === false ?
+                    <Text style={styles.headerButton} onPress={()=>{boardReset(), handleNewGame(), changeWords('false') }}>New Board</Text>
+                    :
+                    <Text style={styles.headerButton} onPress={() => {setFoundWords([]), setFoundIndices([]), handleCustomBoard(userUpdatedWords), changeWords()}}>
+                        See Your Board
+                    </Text> 
+                } */}
                 <Text style={styles.headerText}>{'Word Search'}</Text> 
-                {/* <Text style={styles.headerLeft}>{'                  '}</Text> */}
-                <Text style={styles.headerButton} onPress={()=> { changeWords() }} >
-                    {changeWordsClicked ? 'Back to Game' : 'Change Words'}
+                <Text 
+                    style={styles.headerButton} 
+                    onPress={
+                        changeWordsClicked ?
+                        (() => {
+                            setChangeWordsClicked(false);
+                            // changeWords('false');
+                            setFoundWords([]);
+                            setFoundIndices([]);
+                            handleCustomBoard(userUpdatedWords);
+                        })
+                        : (() => {
+                            setChangeWordsClicked(true);
+                        })
+                    }
+                >
+                    {changeWordsClicked ? 'Play Now' : 'Change Words'}
                 </Text>
             </View>
             <View style={styles.outer}>
                 { changeWordsClicked === true ? (
-                    <ModifyWords words = {words} />
+                    <ModifyWords words = {words} updateToUserUpdatedWords={updateToUserUpdatedWords.bind()}/>
                 ) : (
                 <View>
                     <Text style={styles.foundText}>
@@ -108,7 +140,8 @@ const styles = StyleSheet.create({
         fontSize: horizontalScale(20),
         fontWeight: 'bold',
         color: '#50495A',
-        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
         margin: 5,
         padding: 5,
     },
@@ -134,6 +167,12 @@ const styles = StyleSheet.create({
         width: horizontalScale(365),
         height: verticalScale(310),
         backgroundColor: '#E3D0FF',
+    },
+    headerRight:{
+        fontSize: horizontalScale(15),
+        borderColor: 'transparent',
+        borderWidth: 2,
+        padding: 2,
     },
   })
 

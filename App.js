@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import {Board} from './Components/Board';
-import boardGenerator from './helperFxns';
+import {boardGenerator, updateBoard} from './helperFxns';
 
 let { wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices} = boardGenerator();
 let { width, height } = Dimensions.get('screen');
@@ -13,11 +13,10 @@ export default function App() {
   const [takenIndices, setTakenIndices] = useState(taken);
   const [wordObj, setWordObj] = useState(wordObject);
   const [firstAndLast, setFirstAndLast] = useState(firstAndLastLetterIndices);
-  // const [changeWordsClicked, setChangedWordsClicked] = useState(false)
 
 
   const handleNewGame = () => {
-    let {wordsOnBoard, boardArr, taken, wordObject, wordRanges, firstAndLastLetterIndices} = boardGenerator();
+    let {wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices} = boardGenerator();
     setWords(wordsOnBoard);
     setBoard(boardArr);
     setTakenIndices(taken);
@@ -25,6 +24,14 @@ export default function App() {
     setFirstAndLast(firstAndLastLetterIndices);
   }
 
+  const handleCustomBoard = (arr) => {
+    let {wordsOnBoard, boardArr, taken, wordObject, firstAndLastLetterIndices} = updateBoard(arr);
+    setWords(wordsOnBoard);
+    setBoard(boardArr);
+    setTakenIndices(taken);
+    setWordObj(wordObject);
+    setFirstAndLast(firstAndLastLetterIndices);
+  }
 
   return (
     <View style={styles.container}>
@@ -36,6 +43,7 @@ export default function App() {
           wordObj={wordObj} 
           firstAndLastIndices={firstAndLast} 
           handleNewGame={handleNewGame.bind()}
+          handleCustomBoard={handleCustomBoard.bind()}
           appStyleSheet={styles}
           />
     </View>

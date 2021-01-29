@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {horizontalScale, verticalScale} from '../adjustableSize';
 
+
 export default function ModifyWords(props) {
-    const {words} = props;
+    const {words, updateToUserUpdatedWords} = props;
 
     const [newWords, setNewWords] = useState(words);
     const [newlyAdded, setNewlyAdded] = useState('');
@@ -13,6 +14,7 @@ export default function ModifyWords(props) {
         let temp = newWords;
         temp.splice(index, 1);
         setNewWords(temp);
+        updateToUserUpdatedWords(newWords);
     }
 
     const handleNewWord = (word) => {
@@ -21,15 +23,40 @@ export default function ModifyWords(props) {
             setNewlyAdded('');
         } else {
             setTooLongWord(false);
+            word = word.toUpperCase().trim();
             setNewlyAdded(word);
         }
     }
 
-
-
     return(
         <View>
             <View style={styles.grid}>
+                <Text style={styles.addWordsHeader}>
+                        {tooLongWord ? 
+                            "That word's too long. Maximum 11 letters long per word." 
+                        :
+                            "Add More Words:"
+                        }
+                </Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter your own word..."
+                        onChangeText={ word => handleNewWord(word)}
+                        clearButtonMode='always'
+                        value={newlyAdded}
+                    />
+                <Text 
+                    style={styles.button} 
+                    onPress={
+                        () => {
+                            updateToUserUpdatedWords([...newWords, newlyAdded]);
+                            setNewWords([...newWords, newlyAdded]);
+                            setNewlyAdded('');
+                        }
+                    }
+                >
+                    Submit
+                </Text> 
                 <Text style={styles.modifyWordsHeader}>
                     Current Words
                 </Text>
@@ -37,29 +64,24 @@ export default function ModifyWords(props) {
                     Press on any words below to delete from the list
                 </Text>
                 {newWords.map((word,i) => (
-                    <Text key={i} style={styles.grid} onPress={ () => handleDeleteWord(i)}>
+                    <Text key={i} onPress={ () => handleDeleteWord(i)}>
                         <Text style={styles.text}>
                             {word}
                         </Text>
                     </Text>
                 ))}
-
-                <Text>
-                    {tooLongWord ? 
-                        "That word's too long. Maximum 11 letters long per word." 
-                    :
-                        "Add More Words:"
+                <Text 
+                    style={styles.button}
+                    onPress={
+                        ()=> {
+                            setNewWords([]);
+                            setNewlyAdded('');
+                            updateToUserUpdatedWords(null);
+                        }
                     }
-                </Text>
-
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your own word..."
-                    onChangeText={ word => handleNewWord(word)}
-                    clearButtonMode='always'
-                    value={newlyAdded}
-                />
-                <Text style={styles.button} onPress={() => {setNewWords([...newWords, newlyAdded]), setNewlyAdded('')}}>Submit</Text> 
+                >
+                    Clear Words
+                </Text>   
             </View>
         </View>
     )
@@ -87,9 +109,9 @@ const styles = StyleSheet.create({
     text: {
         fontSize: verticalScale(20),
         fontWeight: 'bold',
+        // margin: horizontalScale(25),
         color: '#50495A',
-        alignItems: 'center',
-        textAlign: 'center'
+        // textAlign: 'center'
     },
     input: {
         height: verticalScale(45),
@@ -102,12 +124,14 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 2,
-        fontSize: horizontalScale(15),
+        fontSize: horizontalScale(20),
         borderWidth: 2,
         borderRadius: 10,
         fontWeight: 'bold',
         borderColor: '#9C6ADE',
         color: '#9C6ADE',
+        margin: horizontalScale(20)
+        // marginBottom: verticalScale(20)
     },
 
     appHeader: {
@@ -126,7 +150,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     headerButton: {
-        padding: 2,
+        padding: 1,
         fontSize: horizontalScale(15),
         borderWidth: 2,
         borderRadius: 10,
@@ -163,13 +187,23 @@ const styles = StyleSheet.create({
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
         flexWrap: 'wrap',
         position: 'relative',
-        margin: 'auto',
+        margin: verticalScale(5),
         width: horizontalScale(365),
         height: verticalScale(50),
         backgroundColor: '#E3D0FF',
+        textAlign: 'center'
+        // marginHorizontal: 10
+        // marginBottom: verticalScale(40)
+    },
+    addWordsHeader: {
+        fontSize: verticalScale(25), 
+        color: '#50495A',
+        fontWeight: 'bold',
+        marginBottom: verticalScale(15)
     },
 
 })
